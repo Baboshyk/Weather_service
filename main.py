@@ -55,11 +55,3 @@ if __name__ == "__main__":
     main()
 
 a = 304.03 - 273.15
-
-class g():
-    gg: int
-    ggg: int
-
-
-def abc(p: g) -> g:
-    return g(5, 7)
