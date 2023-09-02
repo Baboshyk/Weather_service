@@ -8,11 +8,11 @@ Celsius = int
 Wind_Speed = float
 
 
-class WetherType(Enum):
+class WeatherType(Enum):
     CLEAR = 'Clear'
     PARTLY_CLOUDY = 'Partly Cloudy'
     CLOUDY = 'Cloudy'
-    OVERCAST = 'Overcast '
+    OVERCAST_CLOUDY = 'Overcast Cloudy'
     BROKEN_CLOUDS = 'Broken Clouds'
     SCATTERED_CLOUDS = 'Scattered Clouds'
     RAIN = 'Rain'
@@ -36,17 +36,18 @@ class WetherType(Enum):
     TROPICAL_STORM = 'Tropical Storm'
 
 
-class Wether(NamedTuple):
+class Weather(NamedTuple):
+    clouds: str
     wind_speed: Wind_Speed
     temperature: Celsius
-    wether_type: WetherType
+    wether_type: WeatherType
     sunrise: datetime
     sunset: datetime
     city: str
     country: str
 
 
-def get_wether(coordinates: Coordinates):
+def get_weather(coordinates: Coordinates) -> Weather:
     """The function that sends the current coordinates to the weather service
     "https://openweathermap.org" and returns the current state of the weather in json format"""
 
@@ -57,5 +58,14 @@ def get_wether(coordinates: Coordinates):
 
     response = requests.get(openwethermap_url)
     data = response.json()
-    return data
+
+    return Weather(wind_speed=data['wind']['speed'],
+                   temperature=int(data['main']['temp']),
+                   wether_type=data['weather'][0]['description'],
+                   sunrise=datetime.utcfromtimestamp(data['sys']['sunrise']),
+                   sunset=datetime.utcfromtimestamp(data['sys']['sunset']),
+                   country=data['sys']['country'],
+                   city=data['name'],
+                   clouds=data['clouds']['all'])
+
 
