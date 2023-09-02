@@ -8,7 +8,7 @@ Celsius = int
 Wind_Speed = float
 
 
-class WetherType(NamedTuple):
+class WetherType(Enum):
     CLEAR = 'Clear'
     PARTLY_CLOUDY = 'Partly Cloudy'
     CLOUDY = 'Cloudy'
@@ -36,7 +36,7 @@ class WetherType(NamedTuple):
     TROPICAL_STORM = 'Tropical Storm'
 
 
-class Wether(Enum):
+class Wether(NamedTuple):
     wind_speed: Wind_Speed
     temperature: Celsius
     wether_type: WetherType
