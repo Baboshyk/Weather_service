@@ -4,9 +4,6 @@ from typing import NamedTuple
 from datetime import datetime
 from get_coordinates import Coordinates
 
-Celsius = int
-Wind_Speed = float
-
 
 class WeatherType(Enum):
     CLEAR = 'Clear'
@@ -38,8 +35,9 @@ class WeatherType(Enum):
 
 class Weather(NamedTuple):
     clouds: str
-    wind_speed: Wind_Speed
-    temperature: Celsius
+    description: str
+    wind_speed: float
+    temperature: float
     wether_type: WeatherType
     sunrise: datetime
     sunset: datetime
@@ -58,10 +56,11 @@ def get_weather(coordinates: Coordinates) -> Weather:
 
     response = requests.get(openwethermap_url)
     data = response.json()
-
+    """return data"""
     return Weather(wind_speed=data['wind']['speed'],
-                   temperature=int(data['main']['temp']),
-                   wether_type=data['weather'][0]['description'],
+                   temperature=data['main']['temp'],
+                   wether_type=data['weather'][0]['main'],
+                   description=data['weather'][0]['description'],
                    sunrise=datetime.utcfromtimestamp(data['sys']['sunrise']),
                    sunset=datetime.utcfromtimestamp(data['sys']['sunset']),
                    country=data['sys']['country'],
