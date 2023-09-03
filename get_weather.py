@@ -3,6 +3,7 @@ from enum import Enum
 from typing import NamedTuple
 from datetime import datetime
 from get_coordinates import Coordinates
+from requests.exceptions import RequestException
 
 
 class WeatherType(Enum):
@@ -49,22 +50,43 @@ def get_weather(coordinates: Coordinates) -> Weather:
     """The function that sends the current coordinates to the weather service
     "https://openweathermap.org" and returns the current state of the weather in json format"""
 
-    api_key = 'e5c8bfde52ec53797a39286f2aa73105'
+    try:
+        api_key = 'e5c8bfde52ec53797a39286f2aa73105'
 
-    openwethermap_url = f"http://api.openweathermap.org/data/2.5/weather?lat=" \
-                        f"{coordinates.latitude}&lon={coordinates.longitude}&appid={api_key}"
+        if not api_key:
+            raise ValueError("API key is missing. Please provide a valid API key.")
+        else:
+            openwethermap_url = f"http://api.openweathermap.org/data/2.5/weather?lat=" \
+                                f"{coordinates.latitude}&lon={coordinates.longitude}&appid={api_key}"
 
-    response = requests.get(openwethermap_url)
-    data = response.json()
-    """return data"""
-    return Weather(wind_speed=data['wind']['speed'],
-                   temperature=data['main']['temp'],
-                   wether_type=data['weather'][0]['main'],
-                   description=data['weather'][0]['description'],
-                   sunrise=datetime.utcfromtimestamp(data['sys']['sunrise']),
-                   sunset=datetime.utcfromtimestamp(data['sys']['sunset']),
-                   country=data['sys']['country'],
-                   city=data['name'],
-                   clouds=data['clouds']['all'])
+        response = requests.get(openwethermap_url)
+        data = response.json()
+
+        if 'cod' in data and data['cod'] != 200:
+            message = data.get('message', 'Unknown error')
+            raise Exception(f"Error from OpenWeatherMap: {message}")
+        else:
+            wind_speed = data.get('wind', {}).get('speed', None)
+            temperature = data.get('main', {}).get('temp', None)
+            weather_main = data.get('weather', [{}])[0].get('main', None)
+            weather_description = data.get('weather', [{}])[0].get('description', None)
+            sunrise = datetime.utcfromtimestamp(data.get('sys', {}).get('sunrise', 0))
+            sunset = datetime.utcfromtimestamp(data.get('sys', {}).get('sunset', 0))
+            country = data.get('sys', {}).get('country', None)
+            city = data.get('name', None)
+            clouds = data.get('clouds', {}).get('all', None)
+
+        return Weather(wind_speed=wind_speed, temperature=temperature,
+                       wether_type=weather_main, description=weather_description,
+                       sunrise=sunrise, sunset=sunset, country=country, city=city,clouds=clouds)
+
+    except RequestException as e:
+        print(f'Request error: {e}')
+
+    except KeyError as e:
+        print(f'Error in JSON response: {e}')
+
+    except Exception as e:
+        print(f'Unexpected error: {e}')
 
 

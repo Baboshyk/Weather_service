@@ -1,5 +1,4 @@
 from get_weather import Weather
-import datetime
 
 
 def format_weather(weather: Weather) -> str:
@@ -9,5 +8,3 @@ def format_weather(weather: Weather) -> str:
             f"Сloudiness: {weather.clouds}%, wind speed: {weather.wind_speed}m/s\n"
             f"Sunrise: {weather.sunrise.strftime('%Y-%m-%d %H:%M:%S')}\n"
             f"Sunset: {weather.sunset.strftime('%Y-%m-%d %H:%M:%S')}")
-
-

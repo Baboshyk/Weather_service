@@ -1,19 +1,18 @@
-from get_coordinates import Coordinates, get_coordinates
-from get_weather import get_weather, Weather
+from get_coordinates import get_coordinates
+from get_weather import get_weather
 from format_weather import format_weather
 
 
 def main():
-    coordinates = get_coordinates()
-    weather = get_weather(get_coordinates())
-    print(format_weather(weather))
-    # print(weather['weather'][0]['main'], weather['weather'][0]['description'])
-    # print(weather)
+    try:
+        coordinates = get_coordinates()
+        weather = get_weather(coordinates)
+        print(format_weather(weather))
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
 if __name__ == "__main__":
     main()
-
-a = 304.03 - 273.15
-# print(str(int(a)) + '°')
 
