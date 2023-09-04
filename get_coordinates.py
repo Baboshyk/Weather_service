@@ -2,14 +2,22 @@ from typing import NamedTuple
 import geocoder
 
 
-# A Coordinates class that inherits from a named tuple
 class Coordinates(NamedTuple):
-    latitude: float     # Class attribute latitude of get_coordinates.Coordinates latitude: float
-    longitude: float    # Class attribute longitude of get_coordinates.Coordinates longitude: float
+    """A named tuple representing geographic coordinates."""
+    latitude: float     # The latitude coordinate (float)
+    longitude: float    # The longitude coordinate (float)
 
 
 def get_coordinates() -> Coordinates:
-    """The function, that returns your current coordinates (approx)"""
+    """
+    Retrieves approximate current coordinates based on IP address.
+
+    Returns:
+        Coordinates: A named tuple representing latitude and longitude.
+
+    Raises:
+        Exception: If an error occurs during the process.
+    """
     try:
         location = geocoder.ip('me')     # We determine our relative coordinates by IP address
         if location.ok:                  # Checking the request
