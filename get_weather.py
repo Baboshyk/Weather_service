@@ -99,8 +99,9 @@ def get_weather(coordinates: Coordinates) -> Weather:
 
             # Raise an exception with the error message from OpenWeatherMap.
             raise Exception(f"Error from OpenWeatherMap: {message}")
+
+        # Extract weather data from the response JSON.
         else:
-            # Extract weather data from the response JSON.
             wind_speed = data.get('wind', {}).get('speed', None)
             temperature = data.get('main', {}).get('temp', None)
             weather_main = data.get('weather', [{}])[0].get('main', None)
